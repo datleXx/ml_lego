@@ -1,0 +1,47 @@
+{
+    "#": "Test Pipeline",
+    "#": "PAYLOAD='(process_frame (stream_id: 0 frame_id: 0) (a: 0))'",
+    "#": "mosquitto_pub -h $HOST -t $TOPIC -m $PAYLOAD",
+  
+    "version": 0,
+    "name":    "p_image",
+    "runtime": "python",
+  
+    "graph": [
+      "(PE_GetImage PE_ModelInference PE_DrawBoundingBox PE_DisplayImage)"
+    ],
+  
+    "parameters": {
+    },
+  
+    "elements": [
+      { "name":   "PE_GetImage",
+        "input":  [{ "name": "file_path", "type": "str" }],
+        "output": [{ "name": "image_object", "type": "aiko_services.image.ImageCV" }],
+        "deploy": {
+          "local": { "module": "image_pipeline" }
+        }
+      },
+      { "name":   "PE_ModelInference",
+      "input":  [{ "name": "image_object", "type": "aiko_services.image.ImageCV" }],
+      "output": [{ "name": "image_object", "type": "aiko_services.image.ImageCV" }],
+      "deploy": {
+        "local": { "module": "image_pipeline" }
+       }
+      },
+      { "name":   "PE_DrawBoundingBox",
+      "input":  [{ "name": "image_object", "type": "aiko_services.image.ImageCV" }],
+      "output": [{ "name": "image_object", "type": "aiko_services.image.ImageCV" }],
+      "deploy": {
+        "local": { "module": "image_pipeline" }
+        }
+      },
+      { "name":   "PE_DisplayImage",
+      "input":  [{ "name": "image_object", "type": "aiko_services.image.ImageCV" }],
+      "output": [{ "name": "image_object", "type": "aiko_services.image.ImageCV" }],
+      "deploy": {
+        "local": { "module": "image_pipeline" }
+        }
+      }
+    ]
+  }
