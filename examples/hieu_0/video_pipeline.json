@@ -16,14 +16,14 @@
   
     "elements": [
       { "name":   "PE_ReadVideo",
-        "input":  [{ "name": "video_file_name" }],
-        "output": [{ "name": "video" }],
+        "input":  [{ "name": "frame" }],
+        "output": [{ "name": "frame" }],
         "deploy": {
           "local": { "module": "aiko_services.read_video_pipe" }
         }
       },
       { "name":   "PE_Predict",
-        "input":  [{ "name": "video" }],
+        "input":  [{ "name": "frame" }],
         "output": [{ }],
         "deploy": {
           "local": { "module": "aiko_services.read_video_pipe" }

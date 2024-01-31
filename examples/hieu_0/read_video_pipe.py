@@ -1,4 +1,7 @@
-import cv2, pickle
+import cv2, pickle, time, copy
+from threading import Thread
+from typing import Tuple
+
 from ultralytics import YOLO
 
 from aiko_services import aiko, PipelineElement
@@ -14,17 +17,29 @@ class PE_ReadVideo(PipelineElement):
         context.set_protocol("ReadVideo")
         context.get_implementation("PipelineElement").__init__(self, context)
 
-    def process_frame(self, context, video_file_name):
-        _LOGGER.info(f"PE_ReadVideo: {context}, read an video")
-        data = cv2.VideoCapture(video_file_name)
+    def process_frame(self, context, frame) -> Tuple[bool, dict]:
+        _LOGGER.info(f"PE_ReadVideo: {context}, read a frame")
 
-        success = 1
-        video = []
-        while success:
-            success, image = data.read()
-            video.append(image)
+        return True, {"frame": frame}
+    
+    def _run(self, context, video):
+        frame_id = 0
 
-        return True, video
+        while not context["terminate"]:
+            frame_context = copy.deepcopy(context)
+            frame_context["frame_id"] = frame_id
+
+            success, frame = video.read()
+            self.create_frame(frame_context, {"frame": frame})
+            frame_id += 1
+
+    def start_stream(self, context, stream_id) -> Tuple[bool, dict]:
+        context["terminate"] = False
+        video = cv2.VideoCapture("car-detection.mp4")
+        Thread(target=self._run, args=(context, video, )).start()
+
+    def stop_stream(self, context, stream_id):
+        context["terminate"] = True
 
 # --------------------------------------------------------------------------- #
 
@@ -33,10 +48,10 @@ class PE_Predict(PipelineElement):
         context.set_protocol("predict")
         context.get_implementation("PipelineElement").__init__(self, context)
 
-    def process_frame(self, context, video):
+    def process_frame(self, context, frame):
         _LOGGER.info(f"PE_Predict: {context}, Model's prediction")
-        results = model(source=video, show=True)
+        model.predict(source=frame, show=True)
 
-        return True
+        return True, {}
 
 # --------------------------------------------------------------------------- #
