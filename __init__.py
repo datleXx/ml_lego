@@ -1,3 +1,1 @@
-from .dat import image_pipeline
-from .dat import video_pipeline
-from .dat import video_streaming_pipeline
+from .examples.dat_0 import image, image_pipeline
