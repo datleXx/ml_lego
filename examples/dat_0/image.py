@@ -16,7 +16,7 @@ class ImageCV():
     
     def generate_colors(self): 
         # opening the file in read mode
-        my_file = open("/home/datlex/projects/yolo/utils/coco.txt", "r")
+        my_file = open("utils/coco.txt", "r")
         # reading the file
         data = my_file.read()
         # replacing end splitting the text | when newline ('\n') is seen.
