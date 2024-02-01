@@ -1,0 +1,5 @@
+torchvision 
+ultralytics 
+export $PYTHONPATH= ##The parent directory of ml_lego 
+
+
