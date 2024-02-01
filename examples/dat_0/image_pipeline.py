@@ -43,11 +43,16 @@ class PE_ModelInference(PipelineElement):
     def __init__(self, context):
         context.set_protocol("modelinference")
         context.get_implementation("PipelineElement").__init__(self, context)
+        self.model = YOLO("weights/yolov8n.pt", "v8")
 
     def process_frame(self, context, image_object) -> Tuple[bool, dict]:
-        _LOGGER.info(f"PE_ModelInference: {context}, in image_object: {image_object}")
-        image_object.model_inference(YOLO("weights/yolov8n.pt", "v8"))
-        _LOGGER.info(f"PE_ModelInference: {context}, out image_object: {image_object}")
+        time_now = time.time()
+        _LOGGER.debug(f"{self._id(context)}: ## TIME START: {time_now:0.3f} ##")
+        # _LOGGER.info(f"PE_ModelInference: {context}, in image_object: {image_object}")
+        image_object.model_inference(self.model)
+        time_now = time.time()
+        _LOGGER.debug(f"{self._id(context)}: ## TIME END: {time_now:0.3f} ##")
+        # _LOGGER.info(f"PE_ModelInference: {context}, out image_object: {image_object}")
         return True, {"image_object": image_object}
 
 # --------------------------------------------------------------------------- #
@@ -58,9 +63,11 @@ class PE_DrawBoundingBox(PipelineElement):
         context.get_implementation("PipelineElement").__init__(self, context)
 
     def process_frame(self, context, image_object) -> Tuple[bool, dict]:
-        _LOGGER.info(f"PE_DrawBoundingBox: {context}, in image_object: {image_object}")
+        time_now = time.time()
+        _LOGGER.debug(f"{self._id(context)}: ## TIME: {time_now:0.3f} ##")
+        # _LOGGER.info(f"PE_DrawBoundingBox: {context}, in image_object: {image_object}")
         image_object.draw_bounding_box()
-        _LOGGER.info(f"PE_DrawBoundingBox: {context}, out image_object: {image_object}")
+        # _LOGGER.info(f"PE_DrawBoundingBox: {context}, out image_object: {image_object}")
         return True, {"image_object": image_object}
 
 # --------------------------------------------------------------------------- #
@@ -71,9 +78,11 @@ class PE_DisplayImage(PipelineElement):
         context.get_implementation("PipelineElement").__init__(self, context)
 
     def process_frame(self, context, image_object) -> Tuple[bool, dict]:
-        _LOGGER.info(f"PE_DisplayImage: {context}, in image_object: {image_object}")
+        time_now = time.time()
+        _LOGGER.debug(f"{self._id(context)}: ## TIME: {time_now:0.3f} ##")
+        # _LOGGER.info(f"PE_DisplayImage: {context}, in image_object: {image_object}")
         image_object.open_image()
-        _LOGGER.info(f"PE_DisplayImage: {context}, out image_status: {image_object}")
+        # _LOGGER.info(f"PE_DisplayImage: {context}, out image_status: {image_object}")
         return True, {"image_object_status": image_object}
 
 # --------------------------------------------------------------------------- #
@@ -84,29 +93,31 @@ class PE_GenerateFrame(PipelineElement):
         context.get_implementation("PipelineElement").__init__(self, context)
 
     def process_frame(self, context, frame) -> Tuple[bool, dict]:
-        _LOGGER.debug(f"{self._id(context)}: in/out number: {frame}")
+        time_now = time.time()
+        _LOGGER.debug(f"{self._id(context)}: ## TIME: {time_now:0.3f} ##")
         return True, {"image_object": frame}
     
     def _run(self, context): 
         cap = cv2.VideoCapture(0)
-
+        frame_id = 0
         if not cap.isOpened():
             print("Cannot open camera")
             exit()
 
         while not context["terminate"]: 
             frame_context = copy.deepcopy(context)
-
+        
             ret, frame = cap.read()
             if not ret: 
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            frame_id = ImageCV()
-            frame_id.image = frame
-        
-            self.create_frame(frame_context, {"frame": frame_id})
-            # time.sleep(1.0)
-        
+            image_cv = ImageCV()
+            image_cv.image = frame
+            if frame_id % 5 == 0: 
+                self.create_frame(frame_context, {"frame": image_cv})
+            frame_id += 1
+            # time.sleep(0.1)
+
         cap.release()
     
     def start_stream(self, context, stream_id):

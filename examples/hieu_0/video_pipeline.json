@@ -19,14 +19,14 @@
         "input":  [{ "name": "frame" }],
         "output": [{ "name": "frame" }],
         "deploy": {
-          "local": { "module": "aiko_services.read_video_pipe" }
+          "local": { "module": "ml_lego.read_video_pipe" }
         }
       },
       { "name":   "PE_Predict",
         "input":  [{ "name": "frame" }],
         "output": [{ }],
         "deploy": {
-          "local": { "module": "aiko_services.read_video_pipe" }
+          "local": { "module": "ml_lego.read_video_pipe" }
         }
       }
     ]

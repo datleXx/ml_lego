@@ -43,13 +43,13 @@ class ImageCV():
             return None 
 
     def draw_bounding_box(self): 
-        if self.boxes is not None: 
+        if self.image is not None: 
+            if self.boxes is not None: 
 
-            for box in self.boxes: 
-                clsID = box.cls.numpy()[0]
-                conf = box.conf.numpy()[0]
-                bb = box.xyxy.numpy()[0]
-                if self.image is not None: 
+                for box in self.boxes: 
+                    clsID = box.cls.numpy()[0]
+                    conf = box.conf.numpy()[0]
+                    bb = box.xyxy.numpy()[0]
 
                     cv2.rectangle(
                         self.image, 
@@ -70,9 +70,8 @@ class ImageCV():
                         (255, 255, 255),
                         2,
                     )
-                else: 
-                    break
-        print("Error: Haven't perform model inference on this image or haven't load the image ...") 
+    
+            print("Error: Haven't perform model inference on this image or haven't load the image ...") 
     def open_image(self): 
         if self.image is None: 
             print("Error: Cannot find image to open ! Try to load the image first ... ")
