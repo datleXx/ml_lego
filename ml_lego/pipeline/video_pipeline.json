@@ -19,28 +19,28 @@
         "input":  [{ "name": "frame", "type": "ImageCV" }],
         "output":  [{ "name": "image_object", "type": "ImageCV" }],
         "deploy": {
-          "local": { "module": "ml_lego.examples.dat_0.image_pipeline" }
+          "local": { "module": "ml_lego.ml_lego.image_pipeline" }
         }
       },
       { "name":   "PE_ModelInference",
       "input":  [{ "name": "image_object", "type": "ImageCV" }],
       "output":  [{ "name": "image_object", "type": "ImageCV" }],
       "deploy": {
-        "local": { "module": "ml_lego.examples.dat_0.image_pipeline" }
+        "local": { "module": "ml_lego.ml_lego.image_pipeline" }
        }
       },
       { "name":   "PE_DrawBoundingBox",
       "input":  [{ "name": "image_object", "type": "ImageCV" }],
       "output":  [{ "name": "image_object", "type": "ImageCV" }],
       "deploy": {
-        "local": { "module": "ml_lego.examples.dat_0.image_pipeline" }
+        "local": { "module": "ml_lego.ml_lego.image_pipeline" }
         }
       },
       { "name":   "PE_DisplayImage",
       "input":  [{ "name": "image_object", "type": "ImageCV" }],
       "output":  [{ "name": "image_object", "type": "ImageCV" }],
       "deploy": {
-        "local": { "module": "ml_lego.examples.dat_0.image_pipeline" }
+        "local": { "module": "ml_lego.ml_lego.image_pipeline" }
         }
       }
     ]

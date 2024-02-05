@@ -35,7 +35,7 @@ class ImageCV():
     def model_inference(self, model): 
         model = model 
         if self.image is not None: 
-            detect_params = model.predict(source=[self.image], conf=0.45, save=False, device=0)
+            detect_params = model.predict(source=[self.image], conf=0.45, save=False)
             self.boxes = detect_params[0].boxes
             return self.boxes
         else: 
