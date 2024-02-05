@@ -16,29 +16,31 @@
   
     "elements": [
       { "name":   "PE_GetImage",
-        "input":  [{ "name": "file_path", "type": "str" }],
-        "output": [{ "name": "image_object", "type": "image.ImageCV" }],
+        "input":  [{ "name": "file_path", "type": "bytes" }],
+        "output": [{ "name": "image", "type": "bytes" }],
         "deploy": {
           "local": { "module": "ml_lego.examples.dat_0.image_pipeline" }
         }
       },
       { "name":   "PE_ModelInference",
-      "input":  [{ "name": "image_object", "type": "image.ImageCV" }],
-      "output": [{ "name": "image_object", "type": "image.ImageCV" }],
+      "input":  [{ "name": "image", "type": "bytes" }],
+      "output": [{ "name": "prediction", "type": "bytes" },
+                 { "name": "image", "type": "bytes"}],
       "deploy": {
         "local": { "module": "ml_lego.examples.dat_0.image_pipeline" }
        }
       },
       { "name":   "PE_DrawBoundingBox",
-      "input":  [{ "name": "image_object", "type": "image.ImageCV" }],
-      "output": [{ "name": "image_object", "type": "image.ImageCV" }],
+      "input":  [{ "name": "prediction", "type": "bytes" },
+                 { "name": "image", "type": "bytes"}],
+      "output": [{ "name": "image", "type": "bytes" }],
       "deploy": {
         "local": { "module": "ml_lego.examples.dat_0.image_pipeline" }
         }
       },
       { "name":   "PE_DisplayImage",
-      "input":  [{ "name": "image_object", "type": "image.ImageCV" }],
-      "output": [{ "name": "image_object", "type": "image.ImageCV" }],
+      "input":  [{ "name": "image", "type": "bytes" }],
+      "output": [{ "name": "image", "type": "bytes" }],
       "deploy": {
         "local": { "module": "ml_lego.examples.dat_0.image_pipeline" }
         }
