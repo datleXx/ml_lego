@@ -35,6 +35,7 @@ def open_image(image):
     cv2.imshow("Object", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+    
 def model_inference(image, model):
     if image is not None: 
         detect_params = model.predict(source=[image], conf=0.45, save=False)
