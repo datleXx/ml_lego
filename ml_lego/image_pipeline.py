@@ -13,16 +13,18 @@
 from typing import Tuple
 
 from aiko_services import aiko, PipelineElement
-from .image import ImageCV
+# from .image import ImageCV
 from ultralytics import YOLO
 from threading import Thread
 import cv2
 import copy
+from .image_processing import *
 
 import time
 
 _LOGGER = aiko.logger(__name__)
-
+MODEL = YOLO("weights/yolov8n.pt", "v8")
+DETECTION_COLORS, CLASSLIST = generate_colors()
 # --------------------------------------------------------------------------- #
 
 class PE_GetImage(PipelineElement):
@@ -32,10 +34,10 @@ class PE_GetImage(PipelineElement):
 
     def process_frame(self, context, file_path:str) -> Tuple[bool, dict]:
         _LOGGER.info(f"PE_GetImage: {context}, in file_path: {file_path}")
-        image_object = ImageCV()
-        image_object.load_path(file_path)
-        _LOGGER.info(f"PE_GetImage: {context}, out image_object: {image_object}")
-        return True, {"image_object": image_object}
+        image = load_image(file_path)
+        # image_object = load_path(file_path)
+        _LOGGER.info(f"PE_GetImage: {context}, out image: {image}")
+        return True, {"image": image}
 
 # --------------------------------------------------------------------------- #
 
@@ -43,17 +45,18 @@ class PE_ModelInference(PipelineElement):
     def __init__(self, context):
         context.set_protocol("modelinference")
         context.get_implementation("PipelineElement").__init__(self, context)
-        self.model = YOLO("weights/yolov8n.pt", "v8")
+        # self.model = YOLO("weights/yolov8n.pt", "v8")
 
-    def process_frame(self, context, image_object) -> Tuple[bool, dict]:
+    def process_frame(self, context, image) -> Tuple[bool, dict]:
         time_now = time.time()
         _LOGGER.debug(f"{self._id(context)}: ## TIME START: {time_now:0.3f} ##")
         # _LOGGER.info(f"PE_ModelInference: {context}, in image_object: {image_object}")
-        image_object.model_inference(self.model)
+        prediction = model_inference(image, MODEL)
         time_now = time.time()
         _LOGGER.debug(f"{self._id(context)}: ## TIME END: {time_now:0.3f} ##")
         # _LOGGER.info(f"PE_ModelInference: {context}, out image_object: {image_object}")
-        return True, {"image_object": image_object}
+        return True, {"prediction": prediction,
+                      "image": image}
 
 # --------------------------------------------------------------------------- #
     
@@ -62,13 +65,13 @@ class PE_DrawBoundingBox(PipelineElement):
         context.set_protocol("boundingbox")
         context.get_implementation("PipelineElement").__init__(self, context)
 
-    def process_frame(self, context, image_object) -> Tuple[bool, dict]:
+    def process_frame(self, context, prediction, image) -> Tuple[bool, dict]:
         time_now = time.time()
         _LOGGER.debug(f"{self._id(context)}: ## TIME: {time_now:0.3f} ##")
         # _LOGGER.info(f"PE_DrawBoundingBox: {context}, in image_object: {image_object}")
-        image_object.draw_bounding_box()
+        image = draw_box(image, prediction, DETECTION_COLORS, CLASSLIST)
         # _LOGGER.info(f"PE_DrawBoundingBox: {context}, out image_object: {image_object}")
-        return True, {"image_object": image_object}
+        return True, {"image": image}
 
 # --------------------------------------------------------------------------- #
     
@@ -77,13 +80,13 @@ class PE_DisplayImage(PipelineElement):
         context.set_protocol("displayimage")
         context.get_implementation("PipelineElement").__init__(self, context)
 
-    def process_frame(self, context, image_object) -> Tuple[bool, dict]:
+    def process_frame(self, context, image) -> Tuple[bool, dict]:
         time_now = time.time()
         _LOGGER.debug(f"{self._id(context)}: ## TIME: {time_now:0.3f} ##")
         # _LOGGER.info(f"PE_DisplayImage: {context}, in image_object: {image_object}")
-        image_object.open_image()
+        open_image(image)
         # _LOGGER.info(f"PE_DisplayImage: {context}, out image_status: {image_object}")
-        return True, {"image_object_status": image_object}
+        return True, {"image": image}
 
 # --------------------------------------------------------------------------- #
 
@@ -95,7 +98,7 @@ class PE_GenerateFrame(PipelineElement):
     def process_frame(self, context, frame) -> Tuple[bool, dict]:
         time_now = time.time()
         _LOGGER.debug(f"{self._id(context)}: ## TIME: {time_now:0.3f} ##")
-        return True, {"image_object": frame}
+        return True, {"image": frame}
     
     def _run(self, context): 
         cap = cv2.VideoCapture(0)
@@ -111,10 +114,8 @@ class PE_GenerateFrame(PipelineElement):
             if not ret: 
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            image_cv = ImageCV()
-            image_cv.image = frame
-            if frame_id % 10 == 0: 
-                self.create_frame(frame_context, {"frame": image_cv})
+            if frame_id % 5 == 0: 
+                self.create_frame(frame_context, {"frame": frame})
             frame_id += 1
             # time.sleep(0.1)
 

@@ -1,7 +1,6 @@
 import cv2 
 from ultralytics import YOLO
 import random 
-from aiko_services import aiko
 
 # MODEL = YOLO("weights/yolov8n.pt", "v8")
 
@@ -33,7 +32,9 @@ def open_image(image):
         print("Error: Cannot find image to open ! Try to load the image first ... ")
         return None
     cv2.imshow("Object", image)
-    cv2.waitKey(0)
+
+    if cv2.waitKey(1) == ord("q"):
+        exit()
     cv2.destroyAllWindows()
     
 def model_inference(image, model):
