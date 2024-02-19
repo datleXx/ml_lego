@@ -17,6 +17,7 @@ from aiko_services import aiko, PipelineElement
 from transformers import pipeline
 
 _LOGGER = aiko.logger(__name__)
+generator = pipeline(model="gpt2")
 
 # --------------------------------------------------------------------------- #
 
@@ -24,7 +25,6 @@ class PE_GPT2(PipelineElement):
     def __init__(self, context):
         context.set_protocol("Llama2-7B-hf")
         context.get_implementation("PipelineElement").__init__(self, context)
-        generator = pipeline(model="gpt2")
 
     def process_frame(self, context, text) -> Tuple[bool, dict]:
         _LOGGER.info(f"PE_GPT2: {context}, in: {text}")
