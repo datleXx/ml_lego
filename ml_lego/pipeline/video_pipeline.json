@@ -19,7 +19,7 @@
         "input":  [{ "name": "frame", "type": "ImageCV" }],
         "output":  [{ "name": "image", "type": "ImageCV" }],
         "deploy": {
-          "local": { "module": "ml_lego.ml_lego.image_pipeline" }
+          "local": { "module": "image_pipeline" }
         }
       },
       { "name":   "PE_ModelInference",
@@ -27,7 +27,7 @@
       "output": [{ "name": "prediction", "type": "bytes" },
                  { "name": "image", "type": "bytes"}],
       "deploy": {
-        "local": { "module": "ml_lego.ml_lego.image_pipeline" }
+        "local": { "module": "image_pipeline" }
        }
       },
       { "name":   "PE_DrawBoundingBox",
@@ -35,14 +35,14 @@
                  { "name": "image", "type": "bytes"}],
       "output": [{ "name": "image", "type": "bytes" }],
       "deploy": {
-        "local": { "module": "ml_lego.ml_lego.image_pipeline" }
+        "local": { "module": "image_pipeline" }
         }
       },
       { "name":   "PE_DisplayImage",
       "input":  [{ "name": "image", "type": "bytes" }],
       "output": [{ "name": "image", "type": "bytes" }],
       "deploy": {
-        "local": { "module": "ml_lego.ml_lego.image_pipeline" }
+        "local": { "module": "image_pipeline" }
         }
       }
     ]

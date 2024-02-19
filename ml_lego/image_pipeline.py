@@ -18,7 +18,7 @@ from ultralytics import YOLO
 from threading import Thread
 import cv2
 import copy
-from .image_processing import *
+from image_processing import *
 
 import time
 
@@ -84,7 +84,11 @@ class PE_DisplayImage(PipelineElement):
         time_now = time.time()
         _LOGGER.debug(f"{self._id(context)}: ## TIME: {time_now:0.3f} ##")
         # _LOGGER.info(f"PE_DisplayImage: {context}, in image_object: {image_object}")
-        open_image(image)
+        if image is None: 
+            print("Error: Cannot find image to open ! Try to load the image first ... ")
+            return None
+        cv2.imshow("Object", image)
+        cv2.waitKey(1)
         # _LOGGER.info(f"PE_DisplayImage: {context}, out image_status: {image_object}")
         return True, {"image": image}
 

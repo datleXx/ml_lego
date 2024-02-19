@@ -1,12 +1,15 @@
 import cv2 
 from ultralytics import YOLO
 import random 
-
+import os 
 # MODEL = YOLO("weights/yolov8n.pt", "v8")
+
 
 def generate_colors(): 
     # opening the file in read mode
-    my_file = open("utils/coco.txt", "r")
+    script_current_dir = os.path.dirname(__file__)
+    coco_filepath = os.path.join(script_current_dir, "utils/coco.txt")
+    my_file = open(coco_filepath, "r")
     # reading the file
     data = my_file.read()
     # replacing end splitting the text | when newline ('\n') is seen.
