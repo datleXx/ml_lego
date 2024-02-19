@@ -1,13 +1,15 @@
 import cv2 
 from ultralytics import YOLO
 import random 
-from aiko_services import aiko
-
+import os 
 # MODEL = YOLO("weights/yolov8n.pt", "v8")
+
 
 def generate_colors(): 
     # opening the file in read mode
-    my_file = open("utils/coco.txt", "r")
+    script_current_dir = os.path.dirname(__file__)
+    coco_filepath = os.path.join(script_current_dir, "utils/coco.txt")
+    my_file = open(coco_filepath, "r")
     # reading the file
     data = my_file.read()
     # replacing end splitting the text | when newline ('\n') is seen.
@@ -33,7 +35,7 @@ def open_image(image):
         print("Error: Cannot find image to open ! Try to load the image first ... ")
         return None
     cv2.imshow("Object", image)
-    cv2.waitKey(0)
+    cv2.waitKey(1)
     cv2.destroyAllWindows()
     
 def model_inference(image, model):

@@ -1,5 +1,4 @@
-from aiko_services import ImageCV
-import cv2 
+import cv2
 import time
 
 cap = cv2.VideoCapture(0)
@@ -17,6 +16,5 @@ while True :
     # time.sleep(0.1)
     if cv2.waitKey(1) == ord("q"): 
         break
-print(test.isOpened())
 cap.release()
 cv2.destroyAllWindows()
