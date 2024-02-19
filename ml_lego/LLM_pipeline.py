@@ -29,7 +29,7 @@ class PE_GPT2(PipelineElement):
     def process_frame(self, context, text) -> Tuple[bool, dict]:
         _LOGGER.info(f"PE_GPT2: {context}, in: {text}")
         output = generator(text, do_sample=False)
-        _LOGGER.info(f"PE_GPT2: {context}, out: {output}")
-        return True, {"output": output}
+        _LOGGER.info(f"PE_GPT2: {context}, out: {output[0]['generated_text']}")
+        return True, {"output": output[0]['generated_text']}
 
 # --------------------------------------------------------------------------- #
