@@ -8,7 +8,7 @@
     "parameters": {},
   
     "elements": [
-      { "name":   "PE_MicrophoneSD",
+      { "name":   "PE_GPT2",
         "input":  [{ "name": "text", "type": "string" }],
         "output": [{ "name": "text", "type": "string" }],
         "deploy": {
