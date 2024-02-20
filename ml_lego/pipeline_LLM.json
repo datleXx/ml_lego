@@ -3,16 +3,37 @@
     "name":    "p_LLM",
     "runtime": "python",
   
-    "graph": ["PE_GPT2"],
+    "graph": ["PE_RemoteReceive0 PE_WhisperX PE_GPT2 PE_Speaker"],
   
     "parameters": {},
   
     "elements": [
+      { "name":   "PE_RemoteReceive0",
+      "input":  [{ "name": "audio", "type": "bytes" }],
+      "output": [{ "name": "audio", "type": "bytes" }],
+      "deploy": {
+        "local": { "module": "aiko_services.elements.audio_io" }
+        }
+      },
+      { "name":   "PE_WhisperX",
+      "input":  [{ "name": "audio", "type": "bytes" }],
+      "output": [{ "name": "text",  "type": "bytes" }],
+      "deploy": {
+        "local": { "module": "aiko_services.elements.speech_elements" }
+        }
+      },
       { "name":   "PE_GPT2",
-        "input":  [{ "name": "text", "type": "string" }],
-        "output": [{ "name": "text", "type": "string" }],
+      "input":  [{ "name": "text", "type": "string" }],
+      "output": [{ "name": "text", "type": "string" }],
+      "deploy": {
+        "local": { "module": "LLM_pipeline.py" }
+      }
+      },
+      { "name":   "PE_Speaker",
+        "input":  [{ "name": "text", "type": "bytes" }],
+        "output": [{ "name": "text", "type": "bytes" }],
         "deploy": {
-          "local": { "module": "LLM_pipeline.py" }
+          "local": { "module": "aiko_services.elements.audio_io" }
         }
       }
     ]
