@@ -9,17 +9,24 @@
   
     "elements": [
       { "name":   "PE_RemoteReceive0",
-        "input":  [{ "name": "audio", "type": "bytes" }],
-        "output": [{ "name": "audio", "type": "bytes" }],
+        "input":  [{ "name": "text", "type": "bytes" }],
+        "output": [{ "name": "text", "type": "bytes" }],
         "deploy": {
           "local": { "module": "aiko_services.elements.audio_io" }
         }
       },
       { "name":   "PE_LLM",
-        "input":  [{ "name": "audio", "type": "bytes" }],
+        "input":  [{ "name": "text", "type": "bytes" }],
         "output": [{ "name": "text",  "type": "bytes" }],
         "deploy": {
           "local": { "module": "llm_element.py" }
+        }
+      },
+      { "name":   "PE_COQUI_TTS",
+        "input":  [{ "name": "text",  "type": "bytes" }],
+        "output": [{ "name": "audio", "type": "bytes" }],
+        "deploy": {
+          "local": { "module": "speech_elements.py" }
         }
       },
       { "name":   "PE_Speaker",
