@@ -15,15 +15,8 @@
           "local": { "module": "aiko_services.elements.audio_io" }
         }
       },
-      { "name":   "PE_WhisperX",
-      "input":  [{ "name": "audio", "type": "bytes" }],
-      "output": [{ "name": "text",  "type": "bytes" }],
-      "deploy": {
-        "local": { "module": "speech_elements.py" }
-        }
-      },
       { "name":   "PE_RemoteSend0",
-      "input":  [{ "name": "text", "type": "bytes" }],
+      "input":  [{ "name": "audio", "type": "bytes" }],
       "output": [],
       "deploy": {
         "local": { "module": "aiko_services.elements.audio_io" }
