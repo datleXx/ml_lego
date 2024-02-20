@@ -3,7 +3,7 @@
   "name":    "p_LLM",
   "runtime": "python",
 
-  "graph": ["PE_RemoteReceive0 PE_WhisperX PE_GPT2"],
+  "graph": ["(PE_RemoteReceive0 PE_WhisperX PE_GPT2)"],
 
   "parameters": {},
 
