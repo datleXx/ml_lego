@@ -3,7 +3,7 @@
     "name":    "p_transcript_test",
     "runtime": "python",
   
-    "graph": ["(PE_MicrophoneSD PE_WhisperX PE_COQUI_TTS PE_Speaker)"],
+    "graph": ["(PE_MicrophoneSD PE_WhisperX PE_RemoteSend0)"],
   
     "parameters": {},
   
