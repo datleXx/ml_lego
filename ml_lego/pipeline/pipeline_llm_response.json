@@ -37,8 +37,8 @@
         }
       },
       { "name":   "PE_Speaker",
-        "input":  [{ "name": "text", "type": "bytes" }],
-        "output": [{ "name": "text", "type": "bytes" }],
+        "input":  [{ "name": "audio", "type": "bytes" }],
+        "output": [{ "name": "audio", "type": "bytes" }],
         "deploy": {
           "local": { "module": "aiko_services.elements.audio_io" }
         }
