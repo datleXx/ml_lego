@@ -3,12 +3,12 @@
     "name":    "p_speaker",
     "runtime": "python",
   
-    "graph": ["(PE_RemoteReceive1 PE_Speaker)"],
+    "graph": ["(PE_RemoteReceive3 PE_Speaker)"],
   
     "parameters": {},
   
     "elements": [
-      { "name":   "PE_RemoteReceive1",
+      { "name":   "PE_RemoteReceive3",
         "input":  [{ "name": "audio", "type": "bytes" }],
         "output": [{ "name": "audio", "type": "bytes" }],
         "deploy": {
