@@ -3,12 +3,12 @@
     "name":    "p_whisperx",
     "runtime": "python",
   
-    "graph": ["(PE_RemoteReceive0 PE_WhisperX PE_LLM PE_COQUI_TTS PE_Speaker)"],
+    "graph": ["(PE_MicrophoneSD PE_WhisperX PE_LLM PE_COQUI_TTS PE_Speaker)"],
   
     "parameters": {},
   
     "elements": [
-      { "name":   "PE_RemoteReceive0",
+      { "name":   "PE_MicrophoneSD",
         "input":  [{ "name": "audio", "type": "bytes" }],
         "output": [{ "name": "audio", "type": "bytes" }],
         "deploy": {
