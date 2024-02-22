@@ -3,7 +3,7 @@
   "name":    "p_LLM",
   "runtime": "python",
 
-  "graph": ["(PE_RemoteReceive0 PE_WhisperX PE_GPT2)"],
+  "graph": ["(PE_RemoteReceive0 PE_WhisperX PE_GPT2 PE_COQUI_TTS PE_RemoteSend1)"],
 
   "parameters": {},
 
@@ -28,6 +28,20 @@
       "deploy": {
         "local": { "module": "LLM_pipeline.py" }
       } 
+    },
+    { "name":   "PE_COQUI_TTS",
+    "input":  [{ "name": "text",  "type": "bytes" }],
+    "output": [{ "name": "audio", "type": "bytes" }],
+    "deploy": {
+      "local": { "module": "aiko_services.elements.speech_elements" }
+      }
+    },
+    { "name":   "PE_RemoteSend1",
+    "input":  [{ "name": "audio", "type": "bytes" }],
+    "output": [{ "name": "audio", "type": "bytes" }],
+    "deploy": {
+      "local": { "module": "aiko_services.elements.audio_io" }
+    }
     }
   ]
   }

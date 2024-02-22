@@ -1,0 +1,27 @@
+{
+    "version": 0,
+    "name":    "p_speaker",
+    "runtime": "python",
+  
+    "graph": ["(PE_RemoteReceive0 PE_Speaker)"],
+  
+    "parameters": {},
+  
+    "elements": [
+      { "name":   "PE_RemoteReceive1",
+        "input":  [{ "name": "audio", "type": "bytes" }],
+        "output": [{ "name": "audio", "type": "bytes" }],
+        "deploy": {
+          "local": { "module": "aiko_services.elements.audio_io" }
+        }
+      },
+      { "name":   "PE_Speaker",
+        "input":  [{ "name": "audio", "type": "bytes" }],
+        "output": [{ "name": "audio", "type": "bytes" }],
+        "deploy": {
+          "local": { "module": "aiko_services.elements.audio_io" }
+        }
+      }
+    ]
+  }
+  
