@@ -3,7 +3,7 @@
     "name":    "p_speaker",
     "runtime": "python",
   
-    "graph": ["(PE_RemoteReceive0 PE_Speaker)"],
+    "graph": ["(PE_RemoteReceive1 PE_Speaker)"],
   
     "parameters": {},
   
