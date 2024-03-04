@@ -92,40 +92,40 @@ class PE_AudioWriteFile(PipelineElement):
 COQUI_MODEL_NAME = "tts_models/en/vctk/vits"  # TTS().list_models()[0]
 COQUI_SPEAKER_ID = "p364"                     # British, female
 
-COQUI_TTS_LOADED = False  # coqui.ai Text-To-Speech (TTS)
-try:
-    from TTS.api import TTS
-    COQUI_TTS_LOADED = True
-except Exception as exception:
-    diagnostic = "speech_elements.py: Couldn't import TTS module"
-    print(f"WARNING: {diagnostic}")
-    _LOGGER.warning(diagnostic)
+# COQUI_TTS_LOADED = False  # coqui.ai Text-To-Speech (TTS)
+# try:
+from TTS.api import TTS
+    # COQUI_TTS_LOADED = True
+# except Exception as exception:
+#     diagnostic = "speech_elements.py: Couldn't import TTS module"
+#     print(f"WARNING: {diagnostic}")
+#     _LOGGER.warning(diagnostic)
 
-if COQUI_TTS_LOADED: 
-    class PE_COQUI_TTS(PipelineElement):
-        def __init__(self, context):
-            context.set_protocol("text_to_speech:0")
-            implementation = context.get_implementation("PipelineElement")
-            implementation.__init__(self, context)
+# if COQUI_TTS_LOADED: 
+class PE_COQUI_TTS(PipelineElement):
+    def __init__(self, context):
+        context.set_protocol("text_to_speech:0")
+        implementation = context.get_implementation("PipelineElement")
+        implementation.__init__(self, context)
 
-            self._ml_model = TTS(COQUI_MODEL_NAME)
-            _LOGGER.info(f"PE_COQUI_TTS: ML model loaded: {COQUI_MODEL_NAME}")
+        self._ml_model = TTS(COQUI_MODEL_NAME)
+        _LOGGER.info(f"PE_COQUI_TTS: ML model loaded: {COQUI_MODEL_NAME}")
 
-            self.ec_producer.update("speech", "<silence>")
-            self.ec_producer.update("frame_id", -1)
+        self.ec_producer.update("speech", "<silence>")
+        self.ec_producer.update("frame_id", -1)
 
-        def process_frame(self, context, text) -> Tuple[bool, dict]:
-            frame_id = self.share["frame_id"] + 1
-            self.ec_producer.update("frame_id", frame_id)
-            if text:
-                audio = self._ml_model.tts(text, speaker=COQUI_SPEAKER_ID)
-                text = text.replace(" ", " ")  # Unicode U00A0 (NBSP)
-            else:
-                audio = None
-                text = "<silence>"
-            _LOGGER.debug(f"PE_COQUI TTS: {text}")
-            self.ec_producer.update("speech", text)
-            return True, {"audio": audio}
+    def process_frame(self, context, text) -> Tuple[bool, dict]:
+        frame_id = self.share["frame_id"] + 1
+        self.ec_producer.update("frame_id", frame_id)
+        if text:
+            audio = self._ml_model.tts(text, speaker=COQUI_SPEAKER_ID)
+            text = text.replace(" ", " ")  # Unicode U00A0 (NBSP)
+        else:
+            audio = None
+            text = "<silence>"
+        _LOGGER.debug(f"PE_COQUI TTS: {text}")
+        self.ec_producer.update("speech", text)
+        return True, {"audio": audio}
 
 # --------------------------------------------------------------------------- #
 
@@ -174,57 +174,57 @@ WHISPERX_MODEL_SIZE = "tiny"    #    39 M       2,030 Mb   32x
 # WHISPERX_MODEL_SIZE = "large"   # 1,550 M     > 6,140 Mb    1x
 
 WHISPERX_LOADED = False  # whisperX Speech-To-Text (STT)
-try:
-    import whisperx
-    WHISPERX_LOADED = True
-except Exception as exception:
-    diagnostic = "speech_elements.py: Couldn't import whisperx module"
-    print(f"WARNING: {diagnostic}")
-    _LOGGER.warning(diagnostic)
+# try:
+import whisperx
+#     WHISPERX_LOADED = True
+# except Exception as exception:
+#     diagnostic = "speech_elements.py: Couldn't import whisperx module"
+#     print(f"WARNING: {diagnostic}")
+#     _LOGGER.warning(diagnostic)
 
-if WHISPERX_LOADED:
-    class PE_WhisperX(PipelineElement):
-        def __init__(self, context):
-            context.set_protocol("speech_to_text:0")
-            implementation = context.get_implementation("PipelineElement")
-            implementation.__init__(self, context)
+# if WHISPERX_LOADED:
+class PE_WhisperX(PipelineElement):
+    def __init__(self, context):
+        context.set_protocol("speech_to_text:0")
+        implementation = context.get_implementation("PipelineElement")
+        implementation.__init__(self, context)
 
-            self._ml_model = whisperx.load_model(
-                WHISPERX_MODEL_SIZE, CUDA_DEVICE, compute_type='int8')
-            _LOGGER.info(f"PE_WhisperX: ML model loaded: {WHISPERX_MODEL_SIZE}")
-            self._welcome = True
+        self._ml_model = whisperx.load_model(
+            WHISPERX_MODEL_SIZE, CUDA_DEVICE, compute_type='int8')
+        _LOGGER.info(f"PE_WhisperX: ML model loaded: {WHISPERX_MODEL_SIZE}")
+        self._welcome = True
 
-        def process_frame(self, context, audio) -> Tuple[bool, dict]:
-            audio = np.squeeze(audio)
-            frame_id = context["frame_id"]
-            time_start = time.time()
-            prediction = self._ml_model.transcribe(audio=audio, language="en")
-            time_used = time.time() - time_start
-            if time_used > 0.5:
-                _LOGGER.debug(f"PE_WhisperX[{frame_id}] Time: {time_used:0.3f}")
+    def process_frame(self, context, audio) -> Tuple[bool, dict]:
+        audio = np.squeeze(audio)
+        frame_id = context["frame_id"]
+        time_start = time.time()
+        prediction = self._ml_model.transcribe(audio=audio, language="en")
+        time_used = time.time() - time_start
+        if time_used > 0.5:
+            _LOGGER.debug(f"PE_WhisperX[{frame_id}] Time: {time_used:0.3f}")
 
-            text = ""
-            reply = ""
-            if len(prediction["segments"]):
-                text = prediction["segments"][0]["text"].strip().lower()
-                if len(text) and  \
-                    text != "you" and text != "thank you." and  \
-                    text != "thanks for watching!":
-                    text = text.removesuffix(".")
-                    _LOGGER.info(f"PE_WhisperX[{frame_id}] INPUT: {text}")
+        text = ""
+        reply = ""
+        if len(prediction["segments"]):
+            text = prediction["segments"][0]["text"].strip().lower()
+            if len(text) and  \
+                text != "you" and text != "thank you." and  \
+                text != "thanks for watching!":
+                text = text.removesuffix(".")
+                _LOGGER.info(f"PE_WhisperX[{frame_id}] INPUT: {text}")
 
-                    # reply = aide_http_request(0, text, welcome=self._welcome)
-                    self._welcome = False
-                    _LOGGER.info(f"PE_WhisperX[{frame_id}] OUTPUT: {text}")
+                # reply = aide_http_request(0, text, welcome=self._welcome)
+                self._welcome = False
+                _LOGGER.info(f"PE_WhisperX[{frame_id}] OUTPUT: {text}")
 
-                    topic_out = f"{get_namespace()}/speech"
-                    payload_out = generate("text", [text])
-                    aiko.message.publish(topic_out, payload_out)
-                else:
-                    reply = ""
+                topic_out = f"{get_namespace()}/speech"
+                payload_out = generate("text", [text])
+                aiko.message.publish(topic_out, payload_out)
+            else:
+                reply = ""
 
-            if text == "terminate":
-                raise SystemExit()
-            return True, {"text": text}
+        if text == "terminate":
+            raise SystemExit()
+        return True, {"text": text}
 
 # --------------------------------------------------------------------------- #
