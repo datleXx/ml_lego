@@ -22,7 +22,7 @@
         "local": { "module": "aiko_services.elements.speech_elements" }
       }
     },
-    { "name":   "PE_GPT2",
+    { "name":   "PE_LLM",
       "input":  [{ "name": "text", "type": "bytes" }],
       "output": [{ "name": "text", "type": "bytes" }],
       "deploy": {

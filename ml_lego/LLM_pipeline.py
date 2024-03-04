@@ -35,23 +35,20 @@ model = AutoModelForCausalLM.from_pretrained(model_id, quantization_config=bnb_c
 
 # --------------------------------------------------------------------------- #
 
-class PE_GPT2(PipelineElement):
+class PE_LLM(PipelineElement):
     def __init__(self, context):
-        context.set_protocol("Llama2-7B-hf")
+        context.set_protocol("LLM")
         context.get_implementation("PipelineElement").__init__(self, context)
 
     def process_frame(self, context, text) -> Tuple[bool, dict]:
-        _LOGGER.info(f"PE_GPT2: {context}, in: {text}")
+        _LOGGER.info(f"{model_id}: {context}, in: {text}")
         model_inputs = tokenizer([f"{text}"], return_tensors="pt").to("cuda")
-
-        generated_ids = model.generate(**model_inputs)
-        tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
 
         # Setting `max_new_tokens` allows you to control the maximum length
         generated_ids = model.generate(**model_inputs, max_new_tokens=50)
         output = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
 
-        _LOGGER.info(f"PE_GPT2: {context}, out: {output}")
+        _LOGGER.info(f"{model_id}: {context}, out: {output}")
         return True, {"output": output}
 
 # --------------------------------------------------------------------------- #
