@@ -26,7 +26,7 @@
         "input":  [{ "name": "text", "type": "bytes" }],
         "output": [{ "name": "text",  "type": "bytes" }],
         "deploy": {
-          "local": { "module": "llm_elements.py" }
+          "local": { "module": "llm_element.py" }
         }
       },
       { "name":   "PE_COQUI_TTS",
