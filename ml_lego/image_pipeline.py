@@ -18,7 +18,7 @@ from ultralytics import YOLO
 from threading import Thread
 import cv2
 import copy
-from image_processing import *
+from .image_processing import *
 
 import time
 
