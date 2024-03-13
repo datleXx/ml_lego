@@ -77,7 +77,7 @@ class PE_LLM(PipelineElement):
         output = ""
          
         # Skip inference if no audio is detected
-        if text is None:
+        if text == None or text == "":
             pass
         else:
             _LOGGER.info(f"{self._model_id}: {context}, in: {text}")
