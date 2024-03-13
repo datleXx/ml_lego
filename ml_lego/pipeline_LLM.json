@@ -24,13 +24,13 @@
     },
     { "name":   "PE_LLM",
       "input":  [{ "name": "text", "type": "bytes" }],
-      "output": [{ "name": "text", "type": "bytes" }],
+      "output": [{ "name": "output", "type": "bytes" }],
       "deploy": {
         "local": { "module": "LLM_pipeline.py" }
       } 
     },
     { "name":   "PE_COQUI_TTS",
-    "input":  [{ "name": "text",  "type": "bytes" }],
+    "input":  [{ "name": "output",  "type": "bytes" }],
     "output": [{ "name": "audio", "type": "bytes" }],
     "deploy": {
       "local": { "module": "aiko_services.elements.speech_elements" }
