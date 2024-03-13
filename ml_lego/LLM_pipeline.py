@@ -64,6 +64,8 @@ _LOGGER = aiko.logger(__name__)
 # ----------------------LLM THROUGH API CALL IMPLEMENTATION----------------------------------------------------- #
 from gradio_client import Client
 
+import keyboard
+
 class PE_LLM(PipelineElement):
     def __init__(self, context):
         context.set_protocol("LLM")
@@ -75,12 +77,17 @@ class PE_LLM(PipelineElement):
 
     def process_frame(self, context, text) -> Tuple[bool, dict]:
         output = ""
-         
+        command = False
+
+        # Press "c" to start/stop giving command
+        if keyboard.is_pressed("c"):
+            command = not command
+
         # Skip inference if no audio is detected
         if text == None or text == "":
             pass
         else:
-            _LOGGER.info(f"{self._model_id}: {context}, in: {text}")
+            _LOGGER.info(f"{self._model_id}: {context}, in: {text}, command: {command}")
             
             # LLM Hyperparameters
             max_new_tokens = 50
@@ -90,9 +97,8 @@ class PE_LLM(PipelineElement):
             repetition_penalty = 1.2
 
             # If the user prompt is a command
-            if "command" in str.lower(text):
+            if command:
                 system_prompt = "Your outputs must only be S-Expressions.  Do not provide any explanations and examples.  From now on, for all input prompts, you are a translator that turns text into S-Expressions to control a robot dog.  The only S-Expressions that the robot dog understands are (move x), (turn), (wag) and (stop), (sit), (whiz), (sniff), (stretch), (reset).  Otherwise output (error diagnostic_message)"
-                text = text.replace("command", "")
 
             # If the user prompt is a query
             else:
