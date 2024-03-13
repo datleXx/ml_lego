@@ -101,7 +101,7 @@ class PE_LLM(PipelineElement):
                 system_prompt = ""
 
             # API call using Gradio Client
-            output = self.client.predict(
+            output = self._client.predict(
                 user_prompt,	# str  in 'Message' Textbox component
                 system_prompt,	# str  in 'System prompt' Textbox component
                 max_new_tokens,	# float (numeric value between 1 and 2048) in 'Max new tokens' Slider component
