@@ -89,16 +89,17 @@ class PE_LLM(PipelineElement):
             top_k = 50
             repetition_penalty = 1.2
 
-            user_prompt = text
-
             # If the user prompt is a command
             if "command" in str.lower(text):
                 system_prompt = "Your output must only be S-Expressions.  Do not provide any explanations and examples.  From now on, for all input prompts, you are a translator that turns commands into S-Expressions to control a robot dog.  The only S-Expressions that the robot dog understands are (forwards distance), (turn degrees), (wag) and (stop), (sit), (whiz).  Otherwise output (error diagnostic_message)"
+                text = text.replace("command", "")
 
             # If the user prompt is a query
             else:
                 self._client = Client(self._model_id) # Reset the API Client
                 system_prompt = ""
+
+            user_prompt = text
 
             # API call using Gradio Client
             output = self._client.predict(
