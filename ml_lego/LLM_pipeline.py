@@ -80,7 +80,7 @@ class PE_LLM(PipelineElement):
         if text == None or text == "":
             pass
         else:
-            _LOGGER.info(f"{self._model_id}: {context}, in: {text}, command: {command}")
+            _LOGGER.info(f"{self._model_id}: {context}, in: {text}")
             
             # LLM Hyperparameters
             max_new_tokens = 50
