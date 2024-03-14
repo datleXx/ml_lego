@@ -113,7 +113,7 @@ class PE_LLM(PipelineElement):
                 api_name="/chat"
             )
 
-            aiko.message.publish(self._topic_out, f"(speech {len(output)}:{output}")
+            aiko.message.publish(self._topic_out, f"(speech {len(output)}:{output})")
 
             _LOGGER.info(f"{self._model_id}: {context}, out: {output}")
 
