@@ -90,9 +90,10 @@ class PE_LLM(PipelineElement):
             repetition_penalty = 1.2
 
             # If the user prompt is a command
-            if "request" in str.lower(text):
+            if "listen" in str.lower(text):
                 system_prompt = "Your outputs must only be S-Expressions.  Do not provide any explanations and examples.  From now on, for all input prompts, you are a translator that turns text into S-Expressions to control a robot dog.  The only S-Expressions that the robot dog understands are (move x), (turn), (wag) and (stop), (sit), (whiz), (sniff), (stretch), (reset).  Otherwise output (error diagnostic_message)"
-                user_prompt = text.replace("request", "")
+                user_prompt = text.replace("listen", "")
+                print(user_prompt)
 
             # If the user prompt is a query
             else:
